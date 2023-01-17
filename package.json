@@ -1,0 +1,24 @@
+{
+  "name": "yc-serverless-graphql-subscriptions",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esseswann/yc-serverless-graphql-subscriptions.git"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none"
+  },
+  "author": {
+    "name": "jsus",
+    "email": "esseswann@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/esseswann/yc-serverless-graphql-subscriptions/issues"
+  },
+  "dependencies": {
+    "@yandex-cloud/function-types": "2.1.0"
+  }
+}
