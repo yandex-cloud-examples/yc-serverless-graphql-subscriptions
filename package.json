@@ -20,5 +20,9 @@
   },
   "dependencies": {
     "@yandex-cloud/function-types": "2.1.0"
+  },
+  "devDependencies": {
+    "@yandex-cloud/serverless-plugin": "1.7.2",
+    "serverless": "3.26.0"
   }
 }

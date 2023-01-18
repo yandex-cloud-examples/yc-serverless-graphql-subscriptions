@@ -1,0 +1,31 @@
+service: yandex-cloud-nodejs
+frameworkVersion: "3"
+
+provider:
+  name: yandex-cloud
+  runtime: nodejs16
+  httpApi:
+    payload: '1.0'
+
+plugins:
+  - "@yandex-cloud/serverless-plugin"
+
+package:
+  patterns:
+    - '!**'
+    - package.json
+    - package-lock.json
+    - build/*.js
+
+functions:
+  ws-message-handler:
+    handler: build/index.hello
+    memorySize: 128
+    timeout: '5'
+    account: function-sa
+
+resources:
+  function-sa:
+    type: yc::ServiceAccount
+    roles:
+      - editor
