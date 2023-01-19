@@ -1,11 +1,9 @@
-service: yandex-cloud-nodejs
+service: yc-serverless-graphql
 frameworkVersion: "3"
 
 provider:
   name: yandex-cloud
   runtime: nodejs16
-  httpApi:
-    payload: '1.0'
 
 plugins:
   - "@yandex-cloud/serverless-plugin"
@@ -19,7 +17,7 @@ package:
 
 functions:
   ws-message-handler:
-    handler: build/index.hello
+    handler: build/index.handler
     memorySize: 128
     timeout: '5'
     account: function-sa
