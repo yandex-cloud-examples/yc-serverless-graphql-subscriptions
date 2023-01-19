@@ -9,7 +9,9 @@ export const handler: Handler.ApiGateway.WebSocket.Message = (event) => {
   try {
     const parsed = JSON.parse(event.body)
     message = validateMessage(parsed)
-  } catch (error) {
+  } catch (error: unknown) {
+    console.error(`Invalid message: ${event.body}`)
+    console.info((error as Error).toString())
     return {
       statusCode: 400
     }
