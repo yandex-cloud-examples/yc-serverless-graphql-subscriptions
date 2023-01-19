@@ -3,15 +3,18 @@ import { execute, parse } from 'graphql'
 import { validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
 import schema from './schema'
+import websocket from './websocket'
 
-export const handler: Handler.ApiGateway.WebSocket.Message = (event) => {
+export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
   let message: ReturnType<typeof validateMessage>
   try {
     const parsed = JSON.parse(event.body)
     message = validateMessage(parsed)
   } catch (error: unknown) {
     console.error(`Invalid message: ${event.body}`)
-    console.info((error as Error).toString())
+    // As per specification https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md#invalid-message
+    // we should break the connection if the message is invalid
+    websocket.disconnect(event.requestContext.connectionId)
     return {
       statusCode: 400
     }
