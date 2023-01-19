@@ -29,6 +29,10 @@ const handleMessage = async (
       return {
         type: MessageType.ConnectionAck
       }
+    case MessageType.Ping:
+      return {
+        type: MessageType.Pong
+      }
     case MessageType.Subscribe:
       try {
         return {

@@ -15,6 +15,7 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
     // As per specification https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md#invalid-message
     // we should break the connection if the message is invalid
     websocket.disconnect(event.requestContext.connectionId)
+    // FIXME how do we disconnect with error code?
     return {
       statusCode: 400
     }
@@ -22,7 +23,7 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
 
   const contextValue = { connectionId: event.requestContext.connectionId }
 
-  const payload = handleMessage(message, async (payload) =>
+  const payload = await handleMessage(message, async (payload) =>
     execute({
       schema,
       contextValue,
@@ -34,7 +35,9 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(payload),
+    ...(payload && {
+      body: JSON.stringify(payload)
+    }),
     headers: {
       'Content-Type': 'application/json'
     }
