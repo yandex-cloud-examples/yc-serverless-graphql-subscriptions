@@ -41,6 +41,7 @@ const handleMessage = async (
           payload: await payloadHandler(message.payload)
         }
       } catch (error: unknown) {
+        console.log((error as Error).toString())
         return {
           id: message.id,
           type: MessageType.Error,
