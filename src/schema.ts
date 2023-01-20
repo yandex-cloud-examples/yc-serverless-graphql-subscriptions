@@ -19,6 +19,7 @@ const schema = new GraphQLSchema({
       messages: {
         subscribe: (parent) => {
           console.log('subscribe')
+          return pseudoAsyncIterator()
         },
         type: new GraphQLObjectType<unknown, Context>({
           name: 'messages',
@@ -41,6 +42,10 @@ const schema = new GraphQLSchema({
 
 export type Context = {
   connectionId: string
+}
+
+const pseudoAsyncIterator = async function* () {
+  while (true) yield {}
 }
 
 export default schema
