@@ -4,7 +4,7 @@ import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql'
 // Alternatively one can use tools like graphql-codegen
 // for schema-frist approach
 const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
+  query: new GraphQLObjectType<unknown, Context>({
     name: 'query',
     fields: {
       me: {
@@ -13,16 +13,14 @@ const schema = new GraphQLSchema({
       }
     }
   }),
-  subscription: new GraphQLObjectType({
+  subscription: new GraphQLObjectType<unknown, Context>({
     name: 'subscription',
     fields: {
       messages: {
-        resolve: (parent, args, context) => {
-          console.log('kek')
-          console.log(parent)
-          return true
+        subscribe: (parent) => {
+          console.log('subscribe')
         },
-        type: new GraphQLObjectType({
+        type: new GraphQLObjectType<unknown, Context>({
           name: 'messages',
           fields: {
             from: {
@@ -41,7 +39,7 @@ const schema = new GraphQLSchema({
   })
 })
 
-type Context = {
+export type Context = {
   connectionId: string
 }
 

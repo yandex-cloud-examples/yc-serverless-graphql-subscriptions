@@ -1,8 +1,15 @@
 import { Handler } from '@yandex-cloud/function-types'
-import { execute, parse } from 'graphql'
-import { validateMessage } from 'graphql-ws'
+import {
+  OperationTypeNode,
+  execute,
+  ExecutionArgs,
+  getOperationAST,
+  parse,
+  subscribe
+} from 'graphql'
+import { SubscribePayload, validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
-import schema from './schema'
+import schema, { Context } from './schema'
 import websocket from './websocket'
 
 export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
@@ -23,14 +30,8 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
 
   const contextValue = { connectionId: event.requestContext.connectionId }
 
-  const payload = await handleMessage(message, async (payload) =>
-    execute({
-      schema,
-      contextValue,
-      document: parse(payload.query),
-      variableValues: payload.variables,
-      operationName: payload.operationName
-    })
+  const payload = await handleMessage(message, (payload) =>
+    handlePayload(payload, contextValue)
   )
 
   return {
@@ -42,4 +43,25 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
       'Content-Type': 'application/json'
     }
   }
+}
+
+const handlePayload = async (
+  payload: SubscribePayload,
+  contextValue: Context
+) => {
+  const document = parse(payload.query)
+  const operation = getOperationAST(document, payload.operationName)
+  const executeArgs: ExecutionArgs = {
+    schema,
+    contextValue,
+    document,
+    variableValues: payload.variables,
+    operationName: payload.operationName
+  }
+  if (operation?.operation === OperationTypeNode.SUBSCRIPTION) {
+    console.log('subscription')
+    await subscribe(executeArgs)
+    return null
+  }
+  return execute(executeArgs)
 }
