@@ -9,7 +9,8 @@ import {
 } from 'graphql'
 import { SubscribePayload, validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
-import schema, { Context } from './schema'
+import schema from './schema'
+import { Context } from './schema/context'
 import websocket from './websocket'
 
 export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {

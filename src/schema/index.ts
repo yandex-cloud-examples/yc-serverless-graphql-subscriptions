@@ -16,6 +16,10 @@ const schema = makeSchema({
     typegen: __dirname + '/typings.ts',
     schema: __dirname + '/schema.graphql'
   },
+  contextType: {
+    module: __dirname + '/context.ts',
+    export: 'Context'
+  },
   types: [
     objectType({
       name: 'Message',
@@ -26,7 +30,9 @@ const schema = makeSchema({
     }),
     queryType({
       definition(t) {
-        t.string('me')
+        t.string('me', {
+          resolve: (parent, args, context) => context.connectionId
+        })
       }
     }),
     mutationType({
@@ -38,6 +44,7 @@ const schema = makeSchema({
             text: nonNull(stringArg())
           },
           resolve(parent, args) {
+            console.log('sendMessage')
             return {}
           }
         })
@@ -48,6 +55,7 @@ const schema = makeSchema({
         t.field('messages', {
           type: 'Message',
           subscribe() {
+            console.log('subscribe')
             return pseudoAsyncIterator()
           },
           resolve() {
@@ -58,10 +66,6 @@ const schema = makeSchema({
     })
   ]
 })
-
-export type Context = {
-  connectionId: string
-}
 
 const pseudoAsyncIterator = async function* () {
   while (true) yield {}
