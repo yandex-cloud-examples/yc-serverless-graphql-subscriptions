@@ -28,9 +28,12 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  ConnectionNotFound: { // root type
+    connectionId: string; // String!
+  }
   Message: { // root type
-    from?: string | null; // String
-    text?: string | null; // String
+    from: string; // String!
+    text: string; // String!
   }
   Mutation: {};
   Query: {};
@@ -41,35 +44,42 @@ export interface NexusGenInterfaces {
 }
 
 export interface NexusGenUnions {
+  SendMessageResult: NexusGenRootTypes['ConnectionNotFound'] | NexusGenRootTypes['Message'];
 }
 
-export type NexusGenRootTypes = NexusGenObjects
+export type NexusGenRootTypes = NexusGenObjects & NexusGenUnions
 
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  ConnectionNotFound: { // field return type
+    connectionId: string; // String!
+  }
   Message: { // field return type
-    from: string | null; // String
-    text: string | null; // String
+    from: string; // String!
+    text: string; // String!
   }
   Mutation: { // field return type
-    sendMessage: NexusGenRootTypes['Message'] | null; // Message
+    sendMessage: NexusGenRootTypes['SendMessageResult']; // SendMessageResult!
   }
   Query: { // field return type
-    me: string | null; // String
+    me: string; // String!
   }
   Subscription: { // field return type
-    messages: NexusGenRootTypes['Message'] | null; // Message
+    messages: Array<NexusGenRootTypes['Message'] | null> | null; // [Message]
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  ConnectionNotFound: { // field return type name
+    connectionId: 'String'
+  }
   Message: { // field return type name
     from: 'String'
     text: 'String'
   }
   Mutation: { // field return type name
-    sendMessage: 'Message'
+    sendMessage: 'SendMessageResult'
   }
   Query: { // field return type name
     me: 'String'
@@ -89,6 +99,7 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
+  SendMessageResult: "ConnectionNotFound" | "Message"
 }
 
 export interface NexusGenTypeInterfaces {
@@ -104,11 +115,11 @@ export type NexusGenInterfaceNames = never;
 
 export type NexusGenScalarNames = keyof NexusGenScalars;
 
-export type NexusGenUnionNames = never;
+export type NexusGenUnionNames = keyof NexusGenUnions;
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never;
 
-export type NexusGenAbstractsUsingStrategyResolveType = never;
+export type NexusGenAbstractsUsingStrategyResolveType = "SendMessageResult";
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

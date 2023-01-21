@@ -2,19 +2,25 @@
 ### Do not make changes to this file directly
 
 
+type ConnectionNotFound {
+  connectionId: String!
+}
+
 type Message {
-  from: String
-  text: String
+  from: String!
+  text: String!
 }
 
 type Mutation {
-  sendMessage(connectionId: String!, text: String!): Message
+  sendMessage(connectionId: String!, text: String!): SendMessageResult!
 }
 
 type Query {
-  me: String
+  me: String!
 }
 
+union SendMessageResult = ConnectionNotFound | Message
+
 type Subscription {
-  messages: Message
+  messages: [Message]
 }

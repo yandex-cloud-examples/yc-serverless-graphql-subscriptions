@@ -23,7 +23,7 @@ export default {
     data: Buffer,
     type: SendToConnectionRequest_DataType = SendToConnectionRequest_DataType.TEXT
   ) {
-    websocket.send(
+    return websocket.send(
       SendToConnectionRequest.fromPartial({
         connectionId,
         data,

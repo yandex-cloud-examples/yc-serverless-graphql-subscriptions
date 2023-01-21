@@ -2,11 +2,14 @@ import { makeSchema } from 'nexus'
 import {
   mutationType,
   nonNull,
-  objectType,
   queryType,
   stringArg,
-  subscriptionType
+  subscriptionType,
+  unionType
 } from 'nexus/dist/core'
+import websocket from '../websocket'
+import ConnectionNotFound from './ConnectionNotFound'
+import Message from './Message'
 
 // For simplicity we use code-first approach to schema.
 // Alternatively one can use tools like graphql-codegen
@@ -21,16 +24,21 @@ const schema = makeSchema({
     export: 'Context'
   },
   types: [
-    objectType({
-      name: 'Message',
+    Message,
+    ConnectionNotFound,
+    unionType({
+      name: 'SendMessageResult',
       definition(t) {
-        t.string('from')
-        t.string('text')
+        t.members('Message', 'ConnectionNotFound')
+      },
+      resolveType(data) {
+        if ('connectionId' in data) return 'ConnectionNotFound'
+        return 'Message'
       }
     }),
     queryType({
       definition(t) {
-        t.string('me', {
+        t.nonNull.string('me', {
           resolve: (parent, args, context) => context.connectionId
         })
       }
@@ -38,28 +46,32 @@ const schema = makeSchema({
     mutationType({
       definition(t) {
         t.field('sendMessage', {
-          type: 'Message',
+          type: nonNull('SendMessageResult'),
           args: {
             connectionId: nonNull(stringArg()),
             text: nonNull(stringArg())
           },
-          resolve(parent, args) {
-            console.log('sendMessage')
-            return {}
+          async resolve(parent, args, context) {
+            try {
+              await websocket.send(args.connectionId, Buffer.from(args.text))
+              return { from: context.connectionId, text: args.text }
+            } catch (error) {
+              return { connectionId: context.connectionId }
+            }
           }
         })
       }
     }),
     subscriptionType({
       definition(t) {
-        t.field('messages', {
+        t.list.field('messages', {
           type: 'Message',
           subscribe() {
             console.log('subscribe')
             return pseudoAsyncIterator()
           },
           resolve() {
-            return {}
+            return []
           }
         })
       }
