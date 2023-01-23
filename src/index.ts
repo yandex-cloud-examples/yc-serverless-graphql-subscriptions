@@ -1,16 +1,15 @@
 import { Handler } from '@yandex-cloud/function-types'
 import {
-  OperationTypeNode,
   execute,
   ExecutionArgs,
   getOperationAST,
+  OperationTypeNode,
   parse,
   subscribe
 } from 'graphql'
-import { SubscribePayload, validateMessage } from 'graphql-ws'
+import { SubscribeMessage, validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
 import schema from './schema'
-import { Context } from './schema/context'
 import websocket from './websocket'
 
 export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
@@ -29,10 +28,8 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
     }
   }
 
-  const contextValue = { connectionId: event.requestContext.connectionId }
-
   const payload = await handleMessage(message, (payload) =>
-    handlePayload(payload, contextValue)
+    handlePayload(payload, event.requestContext.connectionId)
   )
 
   return {
@@ -47,11 +44,16 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
 }
 
 const handlePayload = async (
-  payload: SubscribePayload,
-  contextValue: Context
+  message: SubscribeMessage,
+  connectionId: string
 ) => {
+  const { payload } = message
   const document = parse(payload.query)
   const operation = getOperationAST(document, payload.operationName)
+  const contextValue = {
+    connectionId,
+    subscriptionId: message.id
+  }
   const executeArgs: ExecutionArgs = {
     schema,
     contextValue,

@@ -17,7 +17,7 @@ type ServerMessages = Extract<Messages, { type: ServerMessageTypes }>
 
 type Messages = ReturnType<typeof validateMessage>
 export type PayloadHandler = (
-  payload: SubscribeMessage['payload']
+  payload: SubscribeMessage
 ) => Promise<NextMessage['payload'] | null>
 
 const handleMessage = async (
@@ -35,7 +35,7 @@ const handleMessage = async (
       }
     case MessageType.Subscribe:
       try {
-        const payload = await payloadHandler(message.payload)
+        const payload = await payloadHandler(message)
         if (!payload) return null
         return {
           id: message.id,

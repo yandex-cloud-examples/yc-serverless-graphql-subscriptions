@@ -1,3 +1,5 @@
+import { GraphQLResolveInfo, Kind } from 'graphql'
+import { isEmpty } from 'lodash'
 import { makeSchema } from 'nexus'
 import {
   mutationType,
@@ -7,8 +9,9 @@ import {
   subscriptionType,
   unionType
 } from 'nexus/dist/core'
-import websocket from '../websocket'
+import pubsub from '../pubsub'
 import ConnectionNotFound from './ConnectionNotFound'
+import { Context } from './context'
 import Message from './Message'
 
 // For simplicity we use code-first approach to schema.
@@ -52,8 +55,8 @@ const schema = makeSchema({
             text: nonNull(stringArg())
           },
           async resolve(parent, args, context) {
+            pubsub.publish('message', { kek: 'plek' })
             try {
-              await websocket.send(args.connectionId, Buffer.from(args.text))
               return { from: context.connectionId, text: args.text }
             } catch (error) {
               return { connectionId: context.connectionId }
@@ -66,11 +69,12 @@ const schema = makeSchema({
       definition(t) {
         t.list.field('messages', {
           type: 'Message',
-          subscribe() {
+          subscribe(parent, args, contextValue, info) {
             console.log('subscribe')
+            if (isEmpty(parent)) handleSubscription(info, contextValue)
             return pseudoAsyncIterator()
           },
-          resolve() {
+          resolve(data) {
             return []
           }
         })
@@ -79,8 +83,20 @@ const schema = makeSchema({
   ]
 })
 
+const handleSubscription = (info: GraphQLResolveInfo, contextValue: Context) =>
+  pubsub.subscribe(info.fieldName, {
+    contextValue,
+    document: {
+      kind: Kind.DOCUMENT,
+      definitions: [...Object.values(info.fragments), info.operation]
+    }
+  })
+
 const pseudoAsyncIterator = async function* () {
-  while (true) yield {}
+  while (true)
+    yield {
+      connectionId: 'kek'
+    }
 }
 
 export default schema
