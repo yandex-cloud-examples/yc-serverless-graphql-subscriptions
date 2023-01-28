@@ -9,10 +9,13 @@ import {
   subscriptionType,
   unionType
 } from 'nexus/dist/core'
-import pubsub from '../pubsub'
+import createPubSub from '../pubsub'
+import ydbStorage from '../ydbStorage'
 import ConnectionNotFound from './ConnectionNotFound'
 import { Context } from './context'
 import Message from './Message'
+
+const pubsub = createPubSub(ydbStorage)
 
 // For simplicity we use code-first approach to schema.
 // Alternatively one can use tools like graphql-codegen
@@ -55,7 +58,7 @@ const schema = makeSchema({
             text: nonNull(stringArg())
           },
           async resolve(parent, args, context) {
-            pubsub.publish('message', { kek: 'plek' })
+            await pubsub.publish('messages', { kek: 'plek' })
             try {
               return { from: context.connectionId, text: args.text }
             } catch (error) {
@@ -72,6 +75,7 @@ const schema = makeSchema({
           subscribe(parent, args, contextValue, info) {
             console.log('subscribe')
             if (isEmpty(parent)) handleSubscription(info, contextValue)
+            console.log(JSON.stringify(parent))
             return pseudoAsyncIterator()
           },
           resolve(data) {
@@ -84,7 +88,8 @@ const schema = makeSchema({
 })
 
 const handleSubscription = (info: GraphQLResolveInfo, contextValue: Context) =>
-  pubsub.subscribe(info.fieldName, {
+  pubsub.subscribe({
+    topic: info.fieldName,
     contextValue,
     document: {
       kind: Kind.DOCUMENT,

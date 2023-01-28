@@ -4,15 +4,17 @@ import websocket from './websocket'
 import schema from './schema'
 import { Context } from './schema/context'
 
-const pubsub = {
-  publish(topic: string, rootValue: ExecutionArgs['rootValue']) {
-    const subscriptions = getSubscriptions(topic)
+const createPubSub = (storage: Storage) => ({
+  async publish(topic: string, rootValue: ExecutionArgs['rootValue']) {
+    console.log('publish')
+    const subscriptions = await storage.get(topic)
     const promises = subscriptions.map(async (value) => {
       const data = await execute({
         schema,
         rootValue,
         ...value
       })
+      console.log(JSON.stringify(data))
       return sendMessage(
         value.contextValue.connectionId,
         value.contextValue.subscriptionId,
@@ -21,16 +23,14 @@ const pubsub = {
     })
     return Promise.all(promises)
   },
-  subscribe(topic: string, subscription: Subscription) {
-    persist({ topic, ...subscription })
+  subscribe(subscription: Subscription) {
+    console.log('subscribe')
+    storage.persist(subscription).catch((error) => {
+      console.log(JSON.stringify(error))
+      console.log(JSON.stringify(subscription))
+    })
   }
-}
-
-const getSubscriptions = (topic: string): Subscription[] => {
-  return []
-}
-
-const persist = (payload: Subscription & { topic: string }) => {}
+})
 
 const sendMessage = async (
   connectionId: string,
@@ -45,11 +45,17 @@ const sendMessage = async (
   return websocket.send(connectionId, Buffer.from(JSON.stringify(payload)))
 }
 
-type Subscription = Pick<
-  ExecutionArgs,
-  'document' | 'variableValues' | 'contextValue' | 'operationName'
-> & {
-  contextValue: Context
+export type Storage = {
+  get(topic: string): Promise<Subscription[]>
+  persist: (subscription: Subscription) => Promise<void>
 }
 
-export default pubsub
+export type Subscription = Pick<
+  ExecutionArgs,
+  'document' | 'variableValues' | 'contextValue'
+> & {
+  contextValue: Context
+  topic: string
+}
+
+export default createPubSub
