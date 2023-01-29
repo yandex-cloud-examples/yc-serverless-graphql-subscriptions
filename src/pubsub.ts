@@ -1,4 +1,4 @@
-import { execute, ExecutionArgs } from 'graphql'
+import { subscribe, ExecutionArgs } from 'graphql'
 import { MessageType, NextMessage } from 'graphql-ws'
 import websocket from './websocket'
 import schema from './schema'
@@ -9,12 +9,11 @@ const createPubSub = (storage: Storage) => ({
     console.log('publish')
     const subscriptions = await storage.get(topic)
     const promises = subscriptions.map(async (value) => {
-      const data = await execute({
+      const data = await subscribe({
         schema,
         rootValue,
         ...value
       })
-      console.log(JSON.stringify(data))
       return sendMessage(
         value.contextValue.connectionId,
         value.contextValue.subscriptionId,

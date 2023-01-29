@@ -74,12 +74,17 @@ const schema = makeSchema({
           type: 'Message',
           subscribe(parent, args, contextValue, info) {
             console.log('subscribe')
-            if (isEmpty(parent)) handleSubscription(info, contextValue)
             console.log(JSON.stringify(parent))
-            return pseudoAsyncIterator()
+            if (isEmpty(parent)) handleSubscription(info, contextValue)
+            return pseudoAsyncIterator({ connectionId: 'kek' })
           },
           resolve(data) {
-            return []
+            return [
+              {
+                from: data.connectionId,
+                text: 'plek'
+              }
+            ]
           }
         })
       }
@@ -97,11 +102,8 @@ const handleSubscription = (info: GraphQLResolveInfo, contextValue: Context) =>
     }
   })
 
-const pseudoAsyncIterator = async function* () {
-  while (true)
-    yield {
-      connectionId: 'kek'
-    }
+const pseudoAsyncIterator = async function* <T>(data: T) {
+  yield data
 }
 
 export default schema

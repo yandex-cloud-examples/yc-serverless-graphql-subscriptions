@@ -29,6 +29,22 @@ export function executePersist(driver: Driver, variables: PersistVariables, quer
     return result;
 }
 
+interface RemoveSubscriptionsVariables {
+    connectionId: Parameters<typeof TypedValues.utf8>[0];
+}
+
+export function executeRemoveSubscriptions(driver: Driver, variables: RemoveSubscriptionsVariables, queryOptions?: Parameters<Session["executeQuery"]>[2]) {
+    const payload = {
+        $connectionId: TypedValues.fromNative(Types.UTF8, variables.connectionId)
+    };
+    const sql = "declare $connectionId as Utf8;\r\n\r\ndelete\r\n  from subscription\r\n where connectionId = $connectionId";
+    async function sessionHandler(session: Session) {
+        return session.executeQuery(sql, payload, queryOptions);
+    }
+    const result = driver.tableClient.withSession(sessionHandler);
+    return result;
+}
+
 interface SubscriptionsVariables {
     topic: Parameters<typeof TypedValues.utf8>[0];
 }
