@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto'
 import { declareType, TypedData, Types } from 'ydb-sdk'
 import { Subscription as SubscriptionRow } from './pubsub'
 import database from './database'
@@ -20,7 +19,8 @@ const ydbStorage: Storage = {
   },
   async persist(payload) {
     executePersist(database, {
-      id: randomUUID(),
+      connectionId: payload.contextValue.connectionId,
+      subscriptionId: payload.contextValue.subscriptionId,
       contextValue: JSON.stringify(payload.contextValue || {}),
       variableValues: JSON.stringify(payload.variableValues || {}),
       document: JSON.stringify(payload.document || {}),
