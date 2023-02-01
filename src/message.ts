@@ -18,6 +18,7 @@ export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
     const parsed = JSON.parse(event.body)
     message = validateMessage(parsed)
   } catch (error: unknown) {
+    console.error(error)
     console.error(`Invalid message: ${event.body}`)
     // As per specification https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md#invalid-message
     // we should break the connection if the message is invalid
