@@ -6,6 +6,6 @@ export type Context = {
   pubsub: PubSub<Topics>
 }
 
-type Topics = {
+export type Topics = {
   messages: { to: string; text: string }
 }

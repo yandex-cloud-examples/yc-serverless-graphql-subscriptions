@@ -9,8 +9,11 @@ import {
 } from 'graphql'
 import { SubscribeMessage, validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
+import createPubSub from './pubsub'
 import schema from './schema'
+import { Context, Topics } from './schema/context'
 import websocket from './websocket'
+import ydbStorage from './ydbStorage'
 
 export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
   let message: ReturnType<typeof validateMessage>
@@ -51,9 +54,10 @@ const handlePayload = async (
   const { payload } = message
   const document = parse(payload.query)
   const operation = getOperationAST(document, payload.operationName)
-  const contextValue = {
+  const contextValue: Context = {
     connectionId,
-    subscriptionId: message.id
+    subscriptionId: message.id,
+    pubsub
   }
   const executeArgs: ExecutionArgs = {
     schema,
@@ -69,3 +73,5 @@ const handlePayload = async (
   }
   return execute(executeArgs)
 }
+
+const pubsub = createPubSub<Topics>(ydbStorage)
