@@ -1,10 +1,13 @@
-import { PubSub } from '../pubsub'
+import { PubSub } from '../pubsub/pubsub'
 
-export type Context = {
+export type SerializableContext = {
   connectionId: string
   subscriptionId: string
-  pubsub: PubSub<Topics>
 }
+
+export type Context = {
+  pubsub: PubSub<Topics>
+} & SerializableContext
 
 export type Topics = {
   messages: { to: string; text: string }

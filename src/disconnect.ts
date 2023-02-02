@@ -1,5 +1,5 @@
 import { Handler } from '@yandex-cloud/function-types'
-import database from './database'
+import database from './services/database'
 import { executeRemoveSubscriptions } from './queries'
 
 export const handler: Handler.ApiGateway.WebSocket.Disconnect = async (

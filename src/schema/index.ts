@@ -49,7 +49,10 @@ const schema = makeExecutableSchema({
 const handleSubscription = (info: GraphQLResolveInfo, contextValue: Context) =>
   contextValue.pubsub.subscribe({
     topic: info.fieldName,
-    contextValue,
+    contextValue: {
+      connectionId: contextValue.connectionId,
+      subscriptionId: contextValue.subscriptionId
+    },
     document: {
       kind: Kind.DOCUMENT,
       definitions: [...Object.values(info.fragments), info.operation]

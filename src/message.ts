@@ -9,11 +9,11 @@ import {
 } from 'graphql'
 import { SubscribeMessage, validateMessage } from 'graphql-ws'
 import handleMessage from './handleGraphqlWsMessage'
-import createPubSub from './pubsub'
+import createPubSub from './pubsub/pubsub'
 import schema from './schema'
 import { Context, Topics } from './schema/context'
-import websocket from './websocket'
-import ydbStorage from './ydbStorage'
+import websocket from './services/websocket'
+import ydbStorage from './pubsub/ydbStorage'
 
 export const handler: Handler.ApiGateway.WebSocket.Message = async (event) => {
   let message: ReturnType<typeof validateMessage>

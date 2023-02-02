@@ -1,8 +1,8 @@
 import { declareType, TypedData, Types } from 'ydb-sdk'
 import { Subscription as SubscriptionRow } from './pubsub'
-import database from './database'
+import database from '../services/database'
 import { Storage } from './pubsub'
-import { executePersist, executeSubscriptions } from './queries'
+import { executePersist, executeSubscriptions } from '../queries'
 
 const ydbStorage: Storage = {
   async get(topic) {

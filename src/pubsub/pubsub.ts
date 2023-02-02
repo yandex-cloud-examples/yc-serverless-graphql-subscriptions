@@ -1,8 +1,8 @@
 import { subscribe, ExecutionArgs } from 'graphql'
 import { MessageType, NextMessage } from 'graphql-ws'
-import websocket from './websocket'
-import schema from './schema'
-import { Context } from './schema/context'
+import websocket from '../services/websocket'
+import schema from '../schema'
+import { Context, SerializableContext } from '../schema/context'
 import { SendToConnectionResponse } from '@yandex-cloud/nodejs-sdk/dist/generated/yandex/cloud/serverless/apigateway/websocket/v1/connection_service'
 
 const createPubSub: CreatePubSub = (storage) => ({
@@ -62,7 +62,7 @@ export type Subscription = Pick<
   ExecutionArgs,
   'document' | 'variableValues' | 'contextValue'
 > & {
-  contextValue: Context
+  contextValue: SerializableContext
   topic: string
 }
 
