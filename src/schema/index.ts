@@ -1,99 +1,49 @@
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import { GraphQLResolveInfo, Kind } from 'graphql'
-import { isEmpty } from 'lodash'
-import { makeSchema } from 'nexus'
-import {
-  mutationType,
-  nonNull,
-  queryType,
-  stringArg,
-  subscriptionType,
-  unionType
-} from 'nexus/dist/core'
-import createPubSub from '../pubsub'
-import ydbStorage from '../ydbStorage'
-import ConnectionNotFound from './ConnectionNotFound'
+import isEmpty from 'lodash/fp/isEmpty'
 import { Context } from './context'
-import Message from './Message'
+import { Resolvers, typeDefs } from './schema'
 
-const pubsub = createPubSub(ydbStorage)
-
-// For simplicity we use code-first approach to schema.
-// Alternatively one can use tools like graphql-codegen
-// for schema-frist (SDL-first) approach
-const schema = makeSchema({
-  outputs: {
-    typegen: __dirname + '/typings.ts',
-    schema: __dirname + '/schema.graphql'
+const resolvers: Resolvers = {
+  SendMessageResult: {
+    __resolveType: (data) =>
+      'connectionId' in data ? 'ConnectionNotFound' : 'Message'
   },
-  contextType: {
-    module: __dirname + '/context.ts',
-    export: 'Context'
+  Query: {
+    me: (parent, data, context) => context.connectionId
   },
-  types: [
-    Message,
-    ConnectionNotFound,
-    unionType({
-      name: 'SendMessageResult',
-      definition(t) {
-        t.members('Message', 'ConnectionNotFound')
+  Subscription: {
+    messages: {
+      subscribe(parent, args, contextValue, info) {
+        console.log('subscribe')
+        console.log(JSON.stringify(parent))
+        if (isEmpty(parent)) handleSubscription(info, contextValue)
+        return pseudoAsyncIterator({ connectionId: 'kek' })
       },
-      resolveType(data) {
-        if ('connectionId' in data) return 'ConnectionNotFound'
-        return 'Message'
+      resolve(data: unknown) {
+        return []
       }
-    }),
-    queryType({
-      definition(t) {
-        t.nonNull.string('me', {
-          resolve: (parent, args, context) => context.connectionId
-        })
+    }
+  },
+  Mutation: {
+    async sendMessage(parent, args, context) {
+      await context.pubsub.publish('messages', args)
+      try {
+        return { from: context.connectionId, text: args.text }
+      } catch (error) {
+        return { connectionId: context.connectionId }
       }
-    }),
-    mutationType({
-      definition(t) {
-        t.field('sendMessage', {
-          type: nonNull('SendMessageResult'),
-          args: {
-            connectionId: nonNull(stringArg()),
-            text: nonNull(stringArg())
-          },
-          async resolve(parent, args, context) {
-            await pubsub.publish('messages', { kek: 'plek' })
-            try {
-              return { from: context.connectionId, text: args.text }
-            } catch (error) {
-              return { connectionId: context.connectionId }
-            }
-          }
-        })
-      }
-    }),
-    subscriptionType({
-      definition(t) {
-        t.list.field('messages', {
-          type: 'Message',
-          subscribe(parent, args, contextValue, info) {
-            console.log('subscribe')
-            console.log(JSON.stringify(parent))
-            if (isEmpty(parent)) handleSubscription(info, contextValue)
-            return pseudoAsyncIterator({ connectionId: 'kek' })
-          },
-          resolve(data) {
-            return [
-              {
-                from: data.connectionId,
-                text: 'plek'
-              }
-            ]
-          }
-        })
-      }
-    })
-  ]
+    }
+  }
+}
+
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
 })
 
 const handleSubscription = (info: GraphQLResolveInfo, contextValue: Context) =>
-  pubsub.subscribe({
+  contextValue.pubsub.subscribe({
     topic: info.fieldName,
     contextValue,
     document: {
