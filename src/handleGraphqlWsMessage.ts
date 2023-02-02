@@ -50,7 +50,7 @@ const handleMessage = async (
           payload: error as GraphQLError[]
         }
       }
-    // We only need to cover these two cases
+    // We only need to cover these three cases
     // because everything else is either incorrect message or asynchronious
     default:
       return null
