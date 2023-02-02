@@ -24,6 +24,7 @@ export type Message = {
   __typename?: 'Message';
   from: Scalars['String'];
   text: Scalars['String'];
+  to: Scalars['String'];
 };
 
 export type Mutation = {
@@ -33,8 +34,8 @@ export type Mutation = {
 
 
 export type MutationSendMessageArgs = {
-  connectionId: Scalars['String'];
   text: Scalars['String'];
+  to: Scalars['String'];
 };
 
 export type Query = {
@@ -148,11 +149,12 @@ export type ConnectionNotFoundResolvers<ContextType = Context, ParentType extend
 export type MessageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
   from?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  to?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  sendMessage?: Resolver<ResolversTypes['SendMessageResult'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'connectionId' | 'text'>>;
+  sendMessage?: Resolver<ResolversTypes['SendMessageResult'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'text' | 'to'>>;
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -179,4 +181,4 @@ export type Resolvers<ContextType = Context> = {
 
 
   import { parse } from "graphql"
-  export const typeDefs = parse(`schema{query:Query mutation:Mutation subscription:Subscription}type ConnectionNotFound{connectionId:String!}type Message{from:String!text:String!}type Mutation{sendMessage(connectionId:String!text:String!):SendMessageResult!}type Query{me:String!}union SendMessageResult=ConnectionNotFound|Message type Subscription{messages:[Message]}`);
+  export const typeDefs = parse(`schema{query:Query mutation:Mutation subscription:Subscription}type ConnectionNotFound{connectionId:String!}type Message{from:String!text:String!to:String!}type Mutation{sendMessage(text:String!to:String!):SendMessageResult!}type Query{me:String!}union SendMessageResult=ConnectionNotFound|Message type Subscription{messages:[Message]}`);

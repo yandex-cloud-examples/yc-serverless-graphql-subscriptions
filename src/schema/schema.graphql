@@ -5,10 +5,11 @@ type ConnectionNotFound {
 type Message {
   from: String!
   text: String!
+  to: String!
 }
 
 type Mutation {
-  sendMessage(connectionId: String!, text: String!): SendMessageResult!
+  sendMessage(to: String!, text: String!): SendMessageResult!
 }
 
 type Query {

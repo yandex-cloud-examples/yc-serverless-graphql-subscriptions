@@ -29,7 +29,11 @@ const resolvers: Resolvers = {
     async sendMessage(parent, args, context) {
       await context.pubsub.publish('messages', args)
       try {
-        return { from: context.connectionId, text: args.text }
+        return {
+          from: context.connectionId,
+          text: args.text,
+          to: args.to
+        }
       } catch (error) {
         return { connectionId: context.connectionId }
       }

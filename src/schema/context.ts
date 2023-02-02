@@ -7,5 +7,5 @@ export type Context = {
 }
 
 type Topics = {
-  messages: { connectionId: string; text: string }
+  messages: { to: string; text: string }
 }
