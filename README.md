@@ -53,6 +53,8 @@ Note that function_ids and service_account_id should be replaced with correspond
 - Fill .env file accordingly to .example.env
 - Execute `npm dev`
 
+This is gonna upload the functions to the cloud and start watch mode for development
+
 # Code generation and tools
 This project uses several tools:
 ### graphql-codegen
