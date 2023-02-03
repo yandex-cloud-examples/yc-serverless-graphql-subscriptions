@@ -8,6 +8,9 @@ import { Topics } from './../schema/context'
 const ydbStorage: Storage<Topics> = {
   get: {
     async messages(args) {
+      // Notice that for each topic we implement a getter
+      // This is necessary so we can properly filter the subscriptions
+      // in the database, so we do not produce empty updates
       const result = await executeMessagesSubscriptions(database, {
         topic: 'messages',
         connectionId: args.to

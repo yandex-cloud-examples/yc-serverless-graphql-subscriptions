@@ -4,6 +4,7 @@ import schema from '../schema'
 import { SerializableContext } from '../schema/context'
 import websocket from '../services/websocket'
 
+// This dumb pubsub requires a storage that implements getters for the subsciption topics
 const createPubSub: CreatePubSub = (storage) => ({
   async publish(topic, rootValue) {
     console.log('publish')

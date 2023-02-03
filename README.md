@@ -8,7 +8,7 @@ Resources required:
 - Api Gateway
 
 ## Infrastructure
-As of now WebSocket and YDB features are not supported by YC's `terraform` or `serverless`, so we are to create resources manually.
+As of now WebSocket and YDB features are not supported by YC's `terraform` or `serverless`, so we are to create resources and execute migrations manually.
 
 - Create a folder
 - Create a service-account
@@ -16,6 +16,7 @@ As of now WebSocket and YDB features are not supported by YC's `terraform` or `s
 - [Create](https://cloud.yandex.ru/docs/functions/operations/function/function-create) `graphql-websocket-message` function
 - [Create](https://cloud.yandex.ru/docs/functions/operations/function/function-create) `graphql-websocket-disconnect` function
 - [Create](https://cloud.yandex.ru/docs/ydb/operations/manage-database#create-db) a YDB database in a serverless mode
+- In the database console execute SQL queries from [/src/migrations/] consequently
 - [Create](https://cloud.yandex.ru/docs/api-gateway/operations/api-gw-create) Api Gateway with config similar to this:
 ```yaml
 openapi: 3.0.0
