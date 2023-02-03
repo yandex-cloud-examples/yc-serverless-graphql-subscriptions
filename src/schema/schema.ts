@@ -180,5 +180,5 @@ export type Resolvers<ContextType = Context> = {
 
 
 
-  import { parse } from "graphql"
-  export const typeDefs = parse(`schema{query:Query mutation:Mutation subscription:Subscription}type ConnectionNotFound{connectionId:String!}type Message{from:String!text:String!to:String!}type Mutation{sendMessage(text:String!to:String!):SendMessageResult!}type Query{me:String!}union SendMessageResult=ConnectionNotFound|Message type Subscription{messages:[Message]}`);
+import { parse } from "graphql"
+export const typeDefs = parse(`schema{query:Query mutation:Mutation subscription:Subscription}type ConnectionNotFound{connectionId:String!}type Message{from:String!text:String!to:String!}type Mutation{sendMessage(text:String!to:String!):SendMessageResult!}type Query{me:String!}union SendMessageResult=ConnectionNotFound|Message type Subscription{messages:[Message]}`);

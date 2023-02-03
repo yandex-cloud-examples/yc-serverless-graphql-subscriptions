@@ -24,25 +24,23 @@
   },
   "dependencies": {
     "@graphql-tools/load": "7.8.11",
-    "@graphql-tools/schema": "9.0.13",
-    "@graphql-tools/utils": "9.1.4",
+    "@graphql-tools/schema": "9.0.15",
+    "@graphql-tools/utils": "9.2.0",
     "graphql": "16.6.0",
-    "graphql-ws": "5.11.2",
+    "graphql-ws": "5.11.3",
     "lodash": "4.17.21",
     "ydb-sdk": "3.8.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "3.0.0",
+    "@graphql-codegen/typescript": "3.0.0",
+    "@graphql-codegen/typescript-resolvers": "3.0.0",
+    "@types/lodash": "^4.14.191",
     "@yandex-cloud/function-types": "2.1.0",
-    "ydb-codegen": "0.0.6",
-    "@graphql-codegen/cli": "2.16.5",
-    "@graphql-codegen/typescript": "2.8.8",
-    "@graphql-codegen/typescript-resolvers": "2.7.13",
-    "@types/serverless": "3.12.9",
     "@yandex-cloud/nodejs-sdk": "2.3.2",
-    "@yandex-cloud/serverless-plugin": "1.7.2",
     "dotenv": "16.0.3",
     "esbuild": "0.17.3",
     "jszip": "3.10.1",
-    "serverless": "3.26.0"
+    "ydb-codegen": "0.0.6"
   }
 }
