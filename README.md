@@ -52,7 +52,7 @@ As long as you keep the ids you can specify any name for the function. In produc
 - [Install](https://cloud.yandex.ru/docs/cli/quickstart) Yandex Cloud CLI (yc)
 - [Authenticate](https://cloud.yandex.ru/docs/cli/quickstart#initialize) in yc
 - Save OAuth token
-- Fill .env file accordingly to [.example.env](/.example.env)
+- Fill .env file accordingly to [example.env](/example.env)
 - Execute `npm dev`
 
 This is gonna upload the functions to the cloud and start watch mode for development
