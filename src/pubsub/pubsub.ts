@@ -14,6 +14,10 @@ const createPubSub: CreatePubSub = (storage) => ({
         rootValue,
         ...value
       })
+      // FIXME this loop actually is not needed
+      // the only reason it is present is GraphQL Schema
+      // requirement for using async iterators as a subscription response
+      // @ts-ignore
       for await (const d of data)
         await sendMessage(
           value.contextValue.connectionId,

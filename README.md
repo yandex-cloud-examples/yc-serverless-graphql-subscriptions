@@ -11,3 +11,9 @@ One of the fastest Typescript to Javascript compilers
 WIP project to simplify working with Yandex Database
 ### serverless
 Plugin for esbuild which makes development process faster
+
+# Infrastructure
+Resources required:
+- YDB
+- 2 Cloud functions
+- Api Gateway
