@@ -4,6 +4,8 @@
     "strict": true,
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": false,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
   }

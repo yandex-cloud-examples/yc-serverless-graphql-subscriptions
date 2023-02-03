@@ -1,26 +1,26 @@
-import { subscribe, ExecutionArgs } from 'graphql'
+import { ExecutionArgs, subscribe } from 'graphql'
 import { MessageType, NextMessage } from 'graphql-ws'
-import websocket from '../services/websocket'
 import schema from '../schema'
-import { Context, SerializableContext } from '../schema/context'
-import { SendToConnectionResponse } from '@yandex-cloud/nodejs-sdk/dist/generated/yandex/cloud/serverless/apigateway/websocket/v1/connection_service'
+import { SerializableContext } from '../schema/context'
+import websocket from '../services/websocket'
 
 const createPubSub: CreatePubSub = (storage) => ({
   async publish(topic, rootValue) {
     console.log('publish')
-    const subscriptions = await storage.get(topic as string)
+    const subscriptions = await storage.get[topic](rootValue)
     const promises = subscriptions.map(async (value) => {
       const data = await subscribe({
         schema,
         rootValue,
         ...value
       })
-      console.log(JSON.stringify(data))
-      return sendMessage(
-        value.contextValue.connectionId,
-        value.contextValue.subscriptionId,
-        data
-      )
+      for await (const d of data)
+        await sendMessage(
+          value.contextValue.connectionId,
+          value.contextValue.subscriptionId,
+          d
+        )
+      return
     })
     return Promise.all(promises)
   },
@@ -38,34 +38,31 @@ const sendMessage = async (
   const payload: NextMessage = {
     id: subscriptionId,
     type: MessageType.Next,
-    payload: { data }
+    payload: data
   }
   return websocket.send(connectionId, Buffer.from(JSON.stringify(payload)))
 }
 
-export type Storage = {
-  get(topic: string): Promise<Subscription[]>
+export type Storage<T extends Topics> = {
+  get: { [K in keyof T]: (args: T[K]) => Promise<Subscription[]> }
   persist: (subscription: Subscription) => Promise<void>
 }
 
-export type CreatePubSub = <T extends Topics>(storage: Storage) => PubSub<T>
+export type CreatePubSub = <T extends Topics>(storage: Storage<T>) => PubSub<T>
 
 export type PubSub<T extends Topics> = {
-  publish(
-    topic: keyof T,
-    rootValue: T[typeof topic]
-  ): Promise<SendToConnectionResponse[]>
+  publish(topic: keyof T, rootValue: T[typeof topic]): Promise<void[]>
   subscribe(subscription: Subscription): Promise<void>
 }
 
 export type Subscription = Pick<
   ExecutionArgs,
-  'document' | 'variableValues' | 'contextValue'
+  'document' | 'variableValues'
 > & {
   contextValue: SerializableContext
   topic: string
 }
 
-export type Topics = Record<string, unknown>
+export type Topics = Record<string, any>
 
 export default createPubSub

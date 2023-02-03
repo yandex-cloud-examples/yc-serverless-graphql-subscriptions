@@ -5,6 +5,24 @@ const defaultQueryOptions = {
     commitTx: true
 }
 
+interface MessagesSubscriptionsVariables {
+    topic: Parameters<typeof TypedValues.utf8>[0];
+    connectionId: Parameters<typeof TypedValues.utf8>[0];
+}
+
+export function executeMessagesSubscriptions(driver: Driver, variables: MessagesSubscriptionsVariables, queryOptions?: Parameters<Session["executeQuery"]>[2]) {
+    const payload = {
+        $topic: TypedValues.fromNative(Types.UTF8, variables.topic),
+        $connectionId: TypedValues.fromNative(Types.UTF8, variables.connectionId)
+    };
+    const sql = "declare $topic as Utf8;\r\ndeclare $connectionId as Utf8;\r\n\r\nselect *\r\n  from subscription\r\n where topic = $topic\r\n   and connectionId = $connectionId";
+    async function sessionHandler(session: Session) {
+        return session.executeQuery(sql, payload, queryOptions);
+    }
+    const result = driver.tableClient.withSession(sessionHandler);
+    return result;
+}
+
 interface PersistVariables {
     connectionId: Parameters<typeof TypedValues.utf8>[0];
     subscriptionId: Parameters<typeof TypedValues.utf8>[0];
@@ -40,22 +58,6 @@ export function executeRemoveSubscriptions(driver: Driver, variables: RemoveSubs
         $connectionId: TypedValues.fromNative(Types.UTF8, variables.connectionId)
     };
     const sql = "declare $connectionId as Utf8;\r\n\r\ndelete from subscription\r\n      where connectionId = $connectionId";
-    async function sessionHandler(session: Session) {
-        return session.executeQuery(sql, payload, queryOptions);
-    }
-    const result = driver.tableClient.withSession(sessionHandler);
-    return result;
-}
-
-interface SubscriptionsVariables {
-    topic: Parameters<typeof TypedValues.utf8>[0];
-}
-
-export function executeSubscriptions(driver: Driver, variables: SubscriptionsVariables, queryOptions?: Parameters<Session["executeQuery"]>[2]) {
-    const payload = {
-        $topic: TypedValues.fromNative(Types.UTF8, variables.topic)
-    };
-    const sql = "declare $topic as Utf8;\r\n\r\nselect *\r\n  from subscription\r\n where topic = $topic";
     async function sessionHandler(session: Session) {
         return session.executeQuery(sql, payload, queryOptions);
     }

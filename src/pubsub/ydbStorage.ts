@@ -1,21 +1,19 @@
-import { declareType, TypedData, Types } from 'ydb-sdk'
+import { declareType, TypedData, Types, Ydb } from 'ydb-sdk'
 import { Subscription as SubscriptionRow } from './pubsub'
 import database from '../services/database'
 import { Storage } from './pubsub'
-import { executePersist, executeSubscriptions } from '../queries'
+import { executeMessagesSubscriptions, executePersist } from '../queries'
+import { Topics } from './../schema/context'
 
-const ydbStorage: Storage = {
-  async get(topic) {
-    const result = await executeSubscriptions(database, { topic })
-    console.log('getting subscriptions', JSON.stringify(result))
-    return Subscription.createNativeObjects(result.resultSets[0]).map(
-      (data) => ({
-        document: JSON.parse(data.document || '{}'),
-        contextValue: JSON.parse(data.contextValue || '{}'),
-        variableValues: JSON.parse(data.variableValues || '{}'),
-        topic: data.topic
+const ydbStorage: Storage<Topics> = {
+  get: {
+    async messages(args) {
+      const result = await executeMessagesSubscriptions(database, {
+        topic: 'messages',
+        connectionId: args.to
       })
-    )
+      return toSubscriptions(result.resultSets[0])
+    }
   },
   async persist(payload) {
     executePersist(database, {
@@ -28,6 +26,14 @@ const ydbStorage: Storage = {
     })
   }
 }
+
+const toSubscriptions = (resultSet: Ydb.IResultSet) =>
+  Subscription.createNativeObjects(resultSet).map((data) => ({
+    document: JSON.parse(data.document || '{}'),
+    contextValue: JSON.parse(data.contextValue || '{}'),
+    variableValues: JSON.parse(data.variableValues || '{}'),
+    topic: data.topic
+  }))
 
 class Subscription extends TypedData {
   @declareType(Types.UTF8)

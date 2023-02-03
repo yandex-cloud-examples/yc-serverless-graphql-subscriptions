@@ -1,10 +1,32 @@
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { GraphQLResolveInfo, Kind } from 'graphql'
 import isEmpty from 'lodash/fp/isEmpty'
-import { Context } from './context'
-import { Resolvers, typeDefs } from './schema'
+import { Context, Topics } from './context'
+import {
+  Resolvers,
+  Subscription,
+  SubscriptionResolvers,
+  typeDefs
+} from './schema'
+
+const Subscription: SubscriptionResolvers = {
+  messages: {
+    subscribe(parent, args, contextValue, info) {
+      console.log('subscribe')
+      console.log(JSON.stringify(parent))
+      if (isEmpty(parent)) handleSubscription(info, contextValue)
+      return pseudoAsyncIterator(parent)
+    },
+    resolve: (data: Topics['messages']) => {
+      console.log('resolve')
+      console.log(JSON.stringify(data))
+      return [data]
+    }
+  }
+}
 
 const resolvers: Resolvers = {
+  Subscription,
   SendMessageResult: {
     __resolveType: (data) =>
       'connectionId' in data ? 'ConnectionNotFound' : 'Message'
@@ -12,28 +34,16 @@ const resolvers: Resolvers = {
   Query: {
     me: (parent, data, context) => context.connectionId
   },
-  Subscription: {
-    messages: {
-      subscribe(parent, args, contextValue, info) {
-        console.log('subscribe')
-        console.log(JSON.stringify(parent))
-        if (isEmpty(parent)) handleSubscription(info, contextValue)
-        return pseudoAsyncIterator({ connectionId: 'kek' })
-      },
-      resolve(data: unknown) {
-        return []
-      }
-    }
-  },
   Mutation: {
     async sendMessage(parent, args, context) {
-      await context.pubsub.publish('messages', args)
+      const message = {
+        from: context.connectionId,
+        text: args.text,
+        to: args.to
+      }
+      await context.pubsub.publish('messages', message)
       try {
-        return {
-          from: context.connectionId,
-          text: args.text,
-          to: args.to
-        }
+        return message
       } catch (error) {
         return { connectionId: context.connectionId }
       }

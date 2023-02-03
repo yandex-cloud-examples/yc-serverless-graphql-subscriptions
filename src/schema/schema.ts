@@ -141,31 +141,31 @@ export type ResolversParentTypes = {
   Subscription: {};
 };
 
-export type ConnectionNotFoundResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ConnectionNotFound'] = ResolversParentTypes['ConnectionNotFound']> = {
+export type ConnectionNotFoundResolvers<ContextType = Context, ParentType = ResolversParentTypes['ConnectionNotFound']> = {
   connectionId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MessageResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
+export type MessageResolvers<ContextType = Context, ParentType = ResolversParentTypes['Message']> = {
   from?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   to?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+export type MutationResolvers<ContextType = Context, ParentType = ResolversParentTypes['Mutation']> = {
   sendMessage?: Resolver<ResolversTypes['SendMessageResult'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'text' | 'to'>>;
 };
 
-export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = Context, ParentType = ResolversParentTypes['Query']> = {
   me?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
-export type SendMessageResultResolvers<ContextType = Context, ParentType extends ResolversParentTypes['SendMessageResult'] = ResolversParentTypes['SendMessageResult']> = {
+export type SendMessageResultResolvers<ContextType = Context, ParentType = ResolversParentTypes['SendMessageResult']> = {
   __resolveType: TypeResolveFn<'ConnectionNotFound' | 'Message', ParentType, ContextType>;
 };
 
-export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+export type SubscriptionResolvers<ContextType = Context, ParentType = ResolversParentTypes['Subscription']> = {
   messages?: SubscriptionResolver<Maybe<Array<Maybe<ResolversTypes['Message']>>>, "messages", ParentType, ContextType>;
 };
 

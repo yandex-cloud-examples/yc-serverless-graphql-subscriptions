@@ -1,4 +1,5 @@
-import { PubSub } from '../pubsub/pubsub'
+import { PubSub } from './../pubsub/pubsub'
+import { SubscriptionResolvers } from './schema'
 
 export type SerializableContext = {
   connectionId: string
@@ -9,6 +10,10 @@ export type Context = {
   pubsub: PubSub<Topics>
 } & SerializableContext
 
-export type Topics = {
-  messages: { to: string; text: string }
+export interface Topics extends Record<keyof SubscriptionResolvers, any> {
+  messages: {
+    from: string
+    to: string
+    text: string
+  }
 }
