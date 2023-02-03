@@ -63,5 +63,5 @@ Production solution to generate typescript and resolver definitions from GraphQL
 One of the fastest Typescript to Javascript compilers
 ### ydb-codegen
 WIP project to simplify working with Yandex Database
-### serverless
+### serverless-esbuild
 Plugin for esbuild which makes development process faster
