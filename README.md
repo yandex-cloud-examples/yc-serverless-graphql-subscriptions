@@ -56,7 +56,7 @@ Note that function_ids and service_account_id should be replaced with correspond
 This is gonna upload the functions to the cloud and start watch mode for development
 
 # Code generation and tools
-This project uses several tools:
+This project uses several tools some of which might be considered unorthodox:
 ### graphql-codegen
 Production solution to generate typescript and resolver definitions from GraphQL Schema
 ### esbuild
