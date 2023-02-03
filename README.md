@@ -44,7 +44,8 @@ paths:
         tag: $latest
         service_account_id: <service-account id>
 ```
-Note that function_ids and service_account_id should be replaced with corresponding data
+Note that function_ids and service_account_id should be replaced with corresponding data.
+As long as you keep the ids you can specify any name for the function. In production this should be configured with terraform and CI scripts
 
 ## Development
 - Install packages using `npm install`
