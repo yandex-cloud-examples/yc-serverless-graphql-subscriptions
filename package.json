@@ -19,8 +19,7 @@
     "url": "https://github.com/esseswann/yc-serverless-graphql-subscriptions/issues"
   },
   "scripts": {
-    "dev": "npx ts-node chores",
-    "deploy": "serverless deploy"
+    "dev": "npx ts-node chores"
   },
   "dependencies": {
     "@graphql-tools/load": "7.8.11",
