@@ -35,11 +35,11 @@
     "@graphql-codegen/cli": "3.0.0",
     "@graphql-codegen/typescript": "3.0.0",
     "@graphql-codegen/typescript-resolvers": "3.0.0",
-    "@types/lodash": "^4.14.191",
+    "@types/lodash": "4.14.191",
     "@yandex-cloud/function-types": "2.1.0",
     "@yandex-cloud/nodejs-sdk": "2.3.2",
     "dotenv": "16.0.3",
-    "esbuild": "0.17.3",
+    "esbuild": "0.17.5",
     "jszip": "3.10.1",
     "ydb-codegen": "0.0.6"
   }
