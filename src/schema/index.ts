@@ -11,15 +11,14 @@ import {
 
 const Subscription: SubscriptionResolvers = {
   messages: {
+    // TODO Add proper parent typings
     subscribe(parent, args, contextValue, info) {
       console.log('subscribe')
-      console.log(JSON.stringify(parent))
       if (isEmpty(parent)) handleSubscription(info, contextValue)
       return pseudoAsyncIterator(parent)
     },
     resolve: (data: Topics['messages']) => {
       console.log('resolve')
-      console.log(JSON.stringify(data))
       return [data]
     }
   }

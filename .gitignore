@@ -1,5 +1,4 @@
 .serverless
 node_modules
-chores
 build
 .env
