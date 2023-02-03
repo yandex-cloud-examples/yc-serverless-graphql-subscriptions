@@ -19,14 +19,12 @@
     "url": "https://github.com/esseswann/yc-serverless-graphql-subscriptions/issues"
   },
   "scripts": {
-    "dev": "npx ts-node chores"
+    "dev": "ts-node chores"
   },
   "dependencies": {
-    "@cdktf/provider-yandex": "^2.0.32",
     "@graphql-tools/load": "7.8.11",
     "@graphql-tools/schema": "9.0.15",
     "@graphql-tools/utils": "9.2.0",
-    "cdktf": "^0.15.2",
     "graphql": "16.6.0",
     "graphql-ws": "5.11.3",
     "lodash": "4.17.21",
@@ -42,6 +40,7 @@
     "dotenv": "16.0.3",
     "esbuild": "0.17.5",
     "jszip": "3.10.1",
+    "ts-node": "10.9.1",
     "ydb-codegen": "0.0.6"
   }
 }
