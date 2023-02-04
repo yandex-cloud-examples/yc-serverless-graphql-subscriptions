@@ -25,11 +25,9 @@ const Subscription: SubscriptionResolvers<
       // This is a poor man's check if this is a subscription request
       // or a subscription resolving triggered by pubsub
       if (parent?.messages) {
-        console.log('handling publish for messages')
         if (parent.messages.to === contextValue.connectionId)
           result = parent.messages
       } else {
-        console.log('subscribing to messages')
         await handleSubscription(args, contextValue, info)
       }
       return pseudoAsyncIterator(result)
