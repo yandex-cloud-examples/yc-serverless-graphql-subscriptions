@@ -19,11 +19,11 @@ const createPubSub: CreatePubSub = (storage) => ({
       // the only reason it is present is GraphQL Schema
       // requirement for using async iterators as a subscription response
       // @ts-ignore
-      for await (const d of data)
+      for await (const item of data)
         await sendMessage(
           value.contextValue.connectionId,
           value.contextValue.subscriptionId,
-          d
+          item
         )
       return
     })
@@ -48,12 +48,12 @@ const sendMessage = async (
   return websocket.send(connectionId, Buffer.from(JSON.stringify(payload)))
 }
 
+export type CreatePubSub = <T extends Topics>(storage: Storage<T>) => PubSub<T>
+
 export type Storage<T extends Topics> = {
   get: { [K in keyof T]: (args: T[K]) => Promise<Subscription[]> }
   persist: (subscription: Subscription) => Promise<void>
 }
-
-export type CreatePubSub = <T extends Topics>(storage: Storage<T>) => PubSub<T>
 
 export type PubSub<T extends Topics> = {
   publish(topic: keyof T, rootValue: T[typeof topic]): Promise<void[]>
