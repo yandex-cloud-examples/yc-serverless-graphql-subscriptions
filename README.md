@@ -11,7 +11,7 @@ Resources required:
 As of now WebSocket and YDB features are not supported by YC's `terraform` or `serverless`, so we are to create resources and execute migrations manually.
 
 - Create a folder
-- Create a service-account
+- Create a service-account. For simplicity give this account admin role to the folder. In production the role should be more granular
 - [Create](https://cloud.yandex.ru/docs/functions/operations/function/function-create) `graphql-websocket-connect` function
 - [Create](https://cloud.yandex.ru/docs/functions/operations/function/function-create) `graphql-websocket-message` function
 - [Create](https://cloud.yandex.ru/docs/functions/operations/function/function-create) `graphql-websocket-disconnect` function
