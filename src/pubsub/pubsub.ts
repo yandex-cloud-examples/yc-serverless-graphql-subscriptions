@@ -6,23 +6,24 @@ import websocket from '../services/websocket'
 
 // This dumb pubsub requires a storage that implements getters for the subsciption topics
 const createPubSub: CreatePubSub = (storage) => ({
-  async publish(topic, rootValue) {
+  async publish(topic, data) {
     console.log('publish')
-    const subscriptions = await storage.get[topic](rootValue)
-    const promises = subscriptions.map(async (value) => {
-      const data = await subscribe({
+    const subscriptions = await storage.get[topic](data)
+    console.log(subscriptions.length)
+    const promises = subscriptions.map(async (subscription) => {
+      const iterator = await subscribe({
         schema,
-        rootValue,
-        ...value
+        rootValue: { [topic]: data },
+        ...subscription
       })
       // FIXME this loop actually is not needed
       // the only reason it is present is GraphQL Schema
       // requirement for using async iterators as a subscription response
       // @ts-ignore
-      for await (const item of data)
+      for await (const item of iterator)
         await sendMessage(
-          value.contextValue.connectionId,
-          value.contextValue.subscriptionId,
+          subscription.contextValue.connectionId,
+          subscription.contextValue.subscriptionId,
           item
         )
       return
@@ -31,6 +32,7 @@ const createPubSub: CreatePubSub = (storage) => ({
   },
   async subscribe(subscription) {
     console.log('subscribe')
+    console.log('data', JSON.stringify(subscription))
     storage.persist(subscription)
   }
 })

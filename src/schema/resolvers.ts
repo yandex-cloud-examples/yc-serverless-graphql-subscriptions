@@ -13,18 +13,28 @@ const Query: QueryResolvers = {
   me: (parent, args, context) => context.connectionId
 }
 
-const Subscription: SubscriptionResolvers = {
+const Subscription: SubscriptionResolvers<
+  Context,
+  Partial<Topics> | undefined
+> = {
   messages: {
     // TODO Add proper parent typings
-    subscribe(parent, args, contextValue, info) {
-      console.log('subscribe')
+    async subscribe(parent, args, contextValue, info) {
+      console.log('handling messages')
+      let result = {}
       // This is a poor man's check if this is a subscription request
       // or a subscription resolving triggered by pubsub
-      if (isEmpty(parent)) handleSubscription(args, contextValue, info)
-      return pseudoAsyncIterator(parent)
+      if (parent?.messages) {
+        console.log('handling publish for messages')
+        if (parent.messages.to === contextValue.connectionId)
+          result = parent.messages
+      } else {
+        console.log('subscribing to messages')
+        await handleSubscription(args, contextValue, info)
+      }
+      return pseudoAsyncIterator(result)
     },
     resolve: (data: Topics['messages']) => {
-      console.log('resolve')
       return [data]
     }
   }
