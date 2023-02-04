@@ -9,7 +9,6 @@ const createPubSub: CreatePubSub = (storage) => ({
   async publish(topic, data) {
     console.log('publish')
     const subscriptions = await storage.get[topic](data)
-    console.log(subscriptions.length)
     const promises = subscriptions.map(async (subscription) => {
       const iterator = await subscribe({
         schema,
@@ -32,7 +31,6 @@ const createPubSub: CreatePubSub = (storage) => ({
   },
   async subscribe(subscription) {
     console.log('subscribe')
-    console.log('data', JSON.stringify(subscription))
     storage.persist(subscription)
   }
 })
