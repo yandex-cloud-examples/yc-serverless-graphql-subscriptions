@@ -28,7 +28,7 @@
     "graphql": "16.6.0",
     "graphql-ws": "5.11.3",
     "lodash": "4.17.21",
-    "ydb-sdk": "3.8.1"
+    "ydb-sdk": "4.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.0.0",
