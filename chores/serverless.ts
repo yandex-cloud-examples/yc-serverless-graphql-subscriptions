@@ -10,7 +10,13 @@ const esbuildServerlessPlugin: Plugin = {
   name: 'serverless',
   setup(build) {
     dotenv.config()
-    const session = new Session({ oauthToken: process.env.YC_OAUTH_TOKEN! })
+    const session = new Session({
+      serviceAccountJson: {
+        accessKeyId: process.env.YC_ACCESS_KEY_ID!,
+        serviceAccountId: process.env.YC_SERVICE_ACCOUNT_ID!,
+        privateKey: process.env.YC_PRIVATE_KEY!
+      }
+    })
     build.onEnd(async (result) => {
       if (result.outputFiles)
         for (const outputFile of result.outputFiles) {

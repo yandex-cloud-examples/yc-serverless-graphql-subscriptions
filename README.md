@@ -49,9 +49,8 @@ As long as you keep the ids you can specify any name for the function. In produc
 
 ## Development
 - Install packages using `npm install`
-- [Install](https://cloud.yandex.ru/docs/cli/quickstart) Yandex Cloud CLI (yc)
-- [Authenticate](https://cloud.yandex.ru/docs/cli/quickstart#initialize) in yc
-- Save OAuth token
+- Create service account with at least functions.editor role
+- Create and save [authorized key](https://cloud.yandex.ru/docs/iam/operations/authorized-key/create) for this account
 - Create and fill `.env` file in the repository root accordingly to [example.env](/example.env)
 - Execute `npm dev`
 
