@@ -48,7 +48,7 @@ Note that function_ids and service_account_id should be replaced with correspond
 As long as you keep the ids you can specify any name for the function. In production this should be configured with terraform and CI scripts
 
 ## Development
-- Install packages using `npm install`
+- Install packages using `npm ci`
 - Create service account with at least functions.editor role
 - Create and save [authorized key](https://cloud.yandex.ru/docs/iam/operations/authorized-key/create) for this account
 - Create and fill `.env` file in the repository root accordingly to [example.env](/example.env)
