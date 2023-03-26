@@ -1,4 +1,4 @@
-import { CreateFunctionVersionRequest } from '@yandex-cloud/nodejs-sdk/dist/generated/yandex/cloud/serverless/functions/v1/function_service'
+import { cloudApi } from '@yandex-cloud/nodejs-sdk'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -42,7 +42,8 @@ const entrypoints: Entrypoints = {
   })
 }
 
-export type EntrypointConfig = Partial<CreateFunctionVersionRequest>
+export type EntrypointConfig =
+  Partial<cloudApi.serverless.functions_function_service.CreateFunctionVersionRequest>
 export type Entrypoints = Record<string, () => EntrypointConfig>
 
 export default entrypoints
