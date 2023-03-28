@@ -1,3 +1,4 @@
+import { isIterableObject } from '@graphql-tools/utils'
 import { ExecutionArgs, subscribe } from 'graphql'
 import { MessageType, NextMessage } from 'graphql-ws'
 import schema from '../schema'
@@ -18,13 +19,13 @@ const createPubSub: CreatePubSub = (storage) => ({
       // FIXME this loop actually is not needed
       // the only reason it is present is GraphQL Schema
       // requirement for using async iterators as a subscription response
-      // @ts-ignore
-      for await (const item of iterator)
-        await sendMessage(
-          subscription.contextValue.connectionId,
-          subscription.contextValue.subscriptionId,
-          item
-        )
+      if (isIterableObject(iterator))
+        for await (const item of iterator)
+          await sendMessage(
+            subscription.contextValue.connectionId,
+            subscription.contextValue.subscriptionId,
+            item as Record<string, unknown>
+          )
       return
     })
     return Promise.all(promises)
@@ -38,7 +39,7 @@ const createPubSub: CreatePubSub = (storage) => ({
 const sendMessage = async (
   connectionId: string,
   subscriptionId: string,
-  data: Record<string, any>
+  data: Record<string, unknown>
 ) => {
   const payload: NextMessage = {
     id: subscriptionId,

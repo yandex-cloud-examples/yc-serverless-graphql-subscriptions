@@ -10,7 +10,7 @@ export type Context = {
   pubsub: PubSub<Topics>
 } & SerializableContext
 
-export interface Topics extends Record<keyof SubscriptionResolvers, any> {
+export interface Topics extends Record<keyof SubscriptionResolvers, unknown> {
   messages: {
     from: string
     to: string
