@@ -1,10 +1,17 @@
 import { cloudApi } from '@yandex-cloud/nodejs-sdk'
 import dotenv from 'dotenv'
+import invariant from 'invariant'
 dotenv.config()
 
+const getFromEnv = (key: string) => {
+  const value = process.env[key]
+  invariant(value, `Provide ${key} environment variable`)
+  return value
+}
+
 const environment = {
-  DATABASE_ENDPOINT: process.env.DATABASE_ENDPOINT!,
-  DATABASE_NAME: process.env.DATABASE_NAME!
+  DATABASE_ENDPOINT: getFromEnv('DATABASE_ENDPOINT'),
+  DATABASE_NAME: getFromEnv('DATABASE_NAME')
 }
 
 const common: EntrypointConfig = {
@@ -19,25 +26,25 @@ const common: EntrypointConfig = {
     seconds: 5,
     nanos: 0
   },
-  serviceAccountId: process.env.SERVICE_ACCOUNT_ID!
+  serviceAccountId: getFromEnv('SERVICE_ACCOUNT_ID')
 }
 
 const entrypoints: Entrypoints = {
   connect: () => ({
     ...common,
-    functionId: process.env.CONNECT_HANDLER_ID!,
+    functionId: getFromEnv('CONNECT_HANDLER_ID'),
     entrypoint: 'connect.handler'
   }),
   message: () => ({
     ...common,
     environment,
-    functionId: process.env.MESSAGE_HANDLER_ID!,
+    functionId: getFromEnv('MESSAGE_HANDLER_ID'),
     entrypoint: 'message.handler'
   }),
   disconnect: () => ({
     ...common,
     environment,
-    functionId: process.env.DISCONNECT_HANDLER_ID!,
+    functionId: getFromEnv('DISCONNECT_HANDLER_ID'),
     entrypoint: 'disconnect.handler'
   })
 }
