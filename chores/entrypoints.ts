@@ -1,13 +1,5 @@
 import { cloudApi } from '@yandex-cloud/nodejs-sdk'
-import dotenv from 'dotenv'
-import invariant from 'invariant'
-dotenv.config()
-
-const getFromEnv = (key: string) => {
-  const value = process.env[key]
-  invariant(value, `Provide ${key} environment variable`)
-  return value
-}
+import getFromEnv from './getFromEnv'
 
 const environment = {
   DATABASE_ENDPOINT: getFromEnv('DATABASE_ENDPOINT'),

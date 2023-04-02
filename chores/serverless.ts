@@ -3,7 +3,7 @@ import { OutputFile, Plugin } from 'esbuild'
 import JSZip from 'jszip'
 import path from 'path'
 import entrypoints, { EntrypointConfig } from './entrypoints'
-import dotenv from 'dotenv'
+import getFromEnv from './getFromEnv'
 
 const CreateFunctionVersionRequest =
   cloudApi.serverless.functions_function_service.CreateFunctionVersionRequest
@@ -11,12 +11,11 @@ const CreateFunctionVersionRequest =
 const esbuildServerlessPlugin: Plugin = {
   name: 'serverless',
   setup(build) {
-    dotenv.config()
     const session = new Session({
       serviceAccountJson: {
-        accessKeyId: process.env.YC_ACCESS_KEY_ID!,
-        serviceAccountId: process.env.YC_SERVICE_ACCOUNT_ID!,
-        privateKey: process.env.YC_PRIVATE_KEY!
+        accessKeyId: getFromEnv('YC_ACCESS_KEY_ID'),
+        serviceAccountId: getFromEnv('YC_SERVICE_ACCOUNT_ID'),
+        privateKey: getFromEnv('YC_PRIVATE_KEY')
       }
     })
     build.onEnd(async (result) => {
