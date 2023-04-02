@@ -1,10 +1,12 @@
-import { serviceClients, Session } from '@yandex-cloud/nodejs-sdk'
-import { CreateFunctionVersionRequest } from '@yandex-cloud/nodejs-sdk/dist/generated/yandex/cloud/serverless/functions/v1/function_service'
+import { serviceClients, Session, cloudApi } from '@yandex-cloud/nodejs-sdk'
 import { OutputFile, Plugin } from 'esbuild'
 import JSZip from 'jszip'
 import path from 'path'
 import entrypoints, { EntrypointConfig } from './entrypoints'
 import dotenv from 'dotenv'
+
+const CreateFunctionVersionRequest =
+  cloudApi.serverless.functions_function_service.CreateFunctionVersionRequest
 
 const esbuildServerlessPlugin: Plugin = {
   name: 'serverless',
