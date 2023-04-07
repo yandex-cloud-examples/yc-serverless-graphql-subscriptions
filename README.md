@@ -56,6 +56,9 @@ As long as you keep the ids you can specify any name for the function. In produc
 
 This is gonna upload the functions to the cloud and start watch mode for development
 
+## Testing
+https://studio.apollographql.com/sandbox/explorer can be used for GraphQL query\subscription testing after deployment
+
 # Code generation and tools
 This project uses several tools some of which might be considered unorthodox:
 ### graphql-codegen
