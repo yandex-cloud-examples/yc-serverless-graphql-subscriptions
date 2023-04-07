@@ -1,7 +1,7 @@
-import build from './build'
-import { processFolder } from 'ydb-codegen'
 import { writeFile } from 'fs/promises'
-import entrypointsConfig from './entrypoints'
+import { processFolder } from 'ydb-codegen'
+import build from './build'
+import entrypoints from './entrypoints'
 import generateGraphQL from './graphql-codegen'
 
 const chores = async () => {
@@ -14,8 +14,7 @@ const chores = async () => {
   await generateGraphQL()
 
   // Build and upload code
-  const entrypoints = Object.keys(entrypointsConfig)
-  await build(entrypoints.map((entrypoint) => `./src/${entrypoint}`))
+  await build(entrypoints)
 }
 
 chores().then(console.log)

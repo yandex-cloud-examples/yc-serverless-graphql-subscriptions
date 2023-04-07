@@ -1,5 +1,8 @@
-import { cloudApi } from '@yandex-cloud/nodejs-sdk'
-import getFromEnv from './getFromEnv'
+import {
+  EntrypointConfig,
+  Entrypoints,
+  getFromEnv
+} from 'esbuild-plugin-serverless'
 
 const environment = {
   DATABASE_ENDPOINT: getFromEnv('DATABASE_ENDPOINT'),
@@ -40,9 +43,5 @@ const entrypoints: Entrypoints = {
     entrypoint: 'disconnect.handler'
   })
 }
-
-export type EntrypointConfig =
-  Partial<cloudApi.serverless.functions_function_service.CreateFunctionVersionRequest>
-export type Entrypoints = Record<string, () => EntrypointConfig>
 
 export default entrypoints

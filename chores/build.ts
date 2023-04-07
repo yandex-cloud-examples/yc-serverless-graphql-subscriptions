@@ -1,8 +1,11 @@
 import { context as createContext } from 'esbuild'
-import esbuildServerlessPlugin from './serverless'
+import { Entrypoints, esbuildServerlessPlugin } from 'esbuild-plugin-serverless'
 
-const build = async (entryPoints: string[]) => {
+const build = async (entryPointsConfig: Entrypoints) => {
   process.env.NODE_ENV = 'PRODUCTION'
+  const entryPoints = Object.keys(entryPointsConfig).map(
+    (entrypoint) => `./src/${entrypoint}`
+  )
   const context = await createContext({
     entryPoints,
     bundle: true,
@@ -13,7 +16,7 @@ const build = async (entryPoints: string[]) => {
     treeShaking: true,
     outdir: 'build',
     write: false,
-    plugins: [esbuildServerlessPlugin]
+    plugins: [esbuildServerlessPlugin(entryPointsConfig)]
   })
   await context.watch()
 }
