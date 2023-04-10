@@ -1,0 +1,23 @@
+type ConnectionNotFound {
+  connectionId: String!
+}
+
+type Message {
+  from: String!
+  text: String!
+  to: String!
+}
+
+type Mutation {
+  sendMessage(to: String!, text: String!): SendMessageResult!
+}
+
+type Query {
+  me: String!
+}
+
+union SendMessageResult = ConnectionNotFound | Message
+
+type Subscription {
+  messages: [Message]
+}
